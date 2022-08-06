@@ -1,7 +1,22 @@
-﻿using SFML.Graphics;
+﻿using System.Text.Json;
+using eSkystudio.A320.RessourcesManager.Models;
+using SFML.Graphics;
 using SFML.Window;
 
-RenderWindow win = new(new (480, 640),"A320-PFD");
+string resourcesPath = @"resources/resources.json";
+if (!File.Exists(resourcesPath))
+{
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine($"Unable to find resource file : {resourcesPath} !");
+    Console.ForegroundColor = ConsoleColor.White;
+    return 0x01;
+}
+
+string text = File.ReadAllText(resourcesPath);
+ResourceManager rm = new ResourceManager(JsonSerializer.Deserialize<ResourceLocator>(text) ?? 
+                                         throw new NullReferenceException(""));
+
+RenderWindow win = new(new (750, 1000),"A320-PFD");
 win.SetFramerateLimit(20);
 win.KeyPressed += (sender, ev) =>
 {
@@ -14,8 +29,10 @@ win.KeyPressed += (sender, ev) =>
 while (win.IsOpen)
 {
     win.DispatchEvents();
-    win.Clear();
+    win.Clear(rm.Colors["Sky"]);
     win.Display();
 }
 
 win.Close();
+
+return 0x00;

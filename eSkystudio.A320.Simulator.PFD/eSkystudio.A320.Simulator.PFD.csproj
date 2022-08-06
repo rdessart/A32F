@@ -11,4 +11,17 @@
       <PackageReference Include="SFML.Net" Version="2.5.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\eSkystudio.A320.RessourcesManager\eSkystudio.A320.RessourcesManager.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="resources\resources.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="resources\Fonts\B612Mono-Regular.ttf">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
