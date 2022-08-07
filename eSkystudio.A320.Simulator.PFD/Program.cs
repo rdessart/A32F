@@ -9,20 +9,27 @@ ResourceManager rm;
 void DrawAHI(double pitch, double roll, RenderTarget target)
 {
     target.Clear(Color.Transparent);
-
-    Vertex[] ReferenceIndicatorL = new Vertex[] {
-        new Vertex(new Vector2f(0.0f, 10.0f), Color.Yellow),
-        new Vertex(new Vector2f(0.0f, 0.0f), Color.Yellow),
-        new Vertex(new Vector2f(50.0f, 0.0f), Color.Yellow),
-        new Vertex(new Vector2f(50.0f, 30.0f), Color.Yellow),
-        new Vertex(new Vector2f(40.0f, 30.0f), Color.Yellow),
-        new Vertex(new Vector2f(40.0f, 10.0f), Color.Yellow),
-        new Vertex(new Vector2f(0.0f, 10.0f), Color.Yellow)
+    Vector2f[] refL = {
+        new Vector2f(0.0f, 0.0f),
+        new Vector2f(50.0f, 0.0f),
+        new Vector2f(50.0f, 35.0f),
+        new Vector2f(35.0f, 35.0f),
+        new Vector2f(35.0f, 15.0f),
+        new Vector2f(0.0f, 15.0f),
+        new Vector2f(0.0f, 0.0f),
     };
+    var referenceIndicatorL = new ConvexShape((uint)refL.Length)
+    {
+        OutlineColor = Color.Black,
+        OutlineThickness = 5,
+        FillColor = Color.Yellow,
+        Position = new Vector2f(0.0f, 395.0f),
+    };
+    for(uint i = 0; i < refL.Length; i++)
+    {
+        referenceIndicatorL.SetPoint(i, refL[i]);
+    }
 
-    VertexBuffer b = new VertexBuffer((uint)ReferenceIndicatorL.Length, PrimitiveType.LineStrip, VertexBuffer.UsageSpecifier.Static)
-    b.Update(ReferenceIndicatorL);
-    
 
     RectangleShape sky = new(new Vector2f(400.0f, 400.0f))
     {
@@ -36,7 +43,7 @@ void DrawAHI(double pitch, double roll, RenderTarget target)
     };
     target.Draw(sky);
     target.Draw(ground);
-    target.Draw(b, RenderStates.Default);
+    target.Draw(referenceIndicatorL, RenderStates.Default);
 }
 
 static bool LoadRessources(out ResourceManager rm)
