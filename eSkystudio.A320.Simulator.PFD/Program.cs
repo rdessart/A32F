@@ -2,19 +2,65 @@
 using eSkystudio.A320.RessourcesManager.Models;
 using SFML.Graphics;
 using SFML.Window;
+using SFML.System;
 
-string resourcesPath = @"resources/resources.json";
-if (!File.Exists(resourcesPath))
+ResourceManager rm;
+
+void DrawAHI(double pitch, double roll, RenderTarget target)
 {
-    Console.ForegroundColor = ConsoleColor.Red;
-    Console.WriteLine($"Unable to find resource file : {resourcesPath} !");
-    Console.ForegroundColor = ConsoleColor.White;
-    return 0x01;
+    target.Clear(Color.Transparent);
+
+    Vertex[] ReferenceIndicatorL = new Vertex[] {
+        new Vertex(new Vector2f(0.0f, 10.0f), Color.Yellow),
+        new Vertex(new Vector2f(0.0f, 0.0f), Color.Yellow),
+        new Vertex(new Vector2f(50.0f, 0.0f), Color.Yellow),
+        new Vertex(new Vector2f(50.0f, 30.0f), Color.Yellow),
+        new Vertex(new Vector2f(40.0f, 30.0f), Color.Yellow),
+        new Vertex(new Vector2f(40.0f, 10.0f), Color.Yellow),
+        new Vertex(new Vector2f(0.0f, 10.0f), Color.Yellow)
+    };
+
+    VertexBuffer b = new VertexBuffer((uint)ReferenceIndicatorL.Length, PrimitiveType.LineStrip, VertexBuffer.UsageSpecifier.Static)
+    b.Update(ReferenceIndicatorL);
+    
+
+    RectangleShape sky = new(new Vector2f(400.0f, 400.0f))
+    {
+        FillColor = rm.Colors["Sky"],
+        Position = new Vector2f(0.0f, 0.0f),
+    };
+    RectangleShape ground = new(new Vector2f(400.0f, 400.0f))
+    {
+        FillColor = rm.Colors["Ground"],
+        Position = new Vector2f(0.0f, 400.0f),
+    };
+    target.Draw(sky);
+    target.Draw(ground);
+    target.Draw(b, RenderStates.Default);
 }
 
-string text = File.ReadAllText(resourcesPath);
-ResourceManager rm = new ResourceManager(JsonSerializer.Deserialize<ResourceLocator>(text) ?? 
-                                         throw new NullReferenceException(""));
+static bool LoadRessources(out ResourceManager rm)
+{
+    rm = new ResourceManager();
+    string resourcesPath = @"resources/resources.json";
+    if (!File.Exists(resourcesPath))
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"Unable to find resource file : {resourcesPath} !");
+        Console.ForegroundColor = ConsoleColor.White;
+        return false;
+    }
+
+    string text = File.ReadAllText(resourcesPath);
+    rm = new ResourceManager(JsonSerializer.Deserialize<ResourceLocator>(text));
+    return true;
+}
+
+
+if(!LoadRessources(out rm) || rm is null)
+{
+    return 0x01;
+}
 
 RenderWindow win = new(new (750, 1000),"A320-PFD");
 win.SetFramerateLimit(20);
@@ -26,10 +72,12 @@ win.KeyPressed += (sender, ev) =>
     }
 };
 
+
 while (win.IsOpen)
 {
     win.DispatchEvents();
-    win.Clear(rm.Colors["Sky"]);
+    win.Clear(rm.Colors["Black"]);
+    DrawAHI(0.0f, 0.0f, win);
     win.Display();
 }
 

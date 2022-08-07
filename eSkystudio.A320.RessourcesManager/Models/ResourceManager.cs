@@ -13,18 +13,24 @@ public class ResourceManager
         Fonts = new Dictionary<string, Font>();
     }
 
-    public ResourceManager(ResourceLocator rl) : this()
+    public ResourceManager(ResourceLocator? rl) : this()
     {
-        foreach(var kv in rl.Colors)
+        LoadFromLocator(rl);
+    }
+
+    public void LoadFromLocator(ResourceLocator? rl)
+    {
+        if (rl is null) return;
+        foreach (var kv in rl.Colors)
         {
             string[] sub = kv.Value.Split(' ');
             Colors[kv.Key] = new Color(
                 byte.Parse(sub[0], System.Globalization.NumberStyles.HexNumber),
                 byte.Parse(sub[1], System.Globalization.NumberStyles.HexNumber),
                 byte.Parse(sub[2], System.Globalization.NumberStyles.HexNumber),
-                00);
+                0xFF);
         }
-        foreach(var kv in rl.Fonts)
+        foreach (var kv in rl.Fonts)
         {
             Fonts[kv.Key] = new Font(kv.Value);
         }
