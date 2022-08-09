@@ -9,41 +9,37 @@ ResourceManager rm;
 void DrawAHI(double pitch, double roll, RenderTarget target)
 {
     target.Clear(Color.Transparent);
-    Vector2f[] refL = {
-        new Vector2f(0.0f, 0.0f),
-        new Vector2f(50.0f, 0.0f),
-        new Vector2f(50.0f, 35.0f),
-        new Vector2f(35.0f, 35.0f),
-        new Vector2f(35.0f, 15.0f),
-        new Vector2f(0.0f, 15.0f),
-        new Vector2f(0.0f, 0.0f),
-    };
-    var referenceIndicatorL = new ConvexShape((uint)refL.Length)
-    {
-        OutlineColor = Color.Black,
-        OutlineThickness = 5,
-        FillColor = Color.Yellow,
-        Position = new Vector2f(0.0f, 395.0f),
-    };
-    for(uint i = 0; i < refL.Length; i++)
-    {
-        referenceIndicatorL.SetPoint(i, refL[i]);
-    }
+
+    int targetFillWidth = 100;
+    int targetFillHeight = 20;
+    int targetFillHeight2 = 50;
+
+    VertexArray va = new VertexArray(PrimitiveType.Quads);
+
+    va.Append(new Vertex(new(0.0f, 0.0f), Color.Black));
+    va.Append(new Vertex(new(0.0f, targetFillHeight), Color.Black));
+    va.Append(new Vertex(new(targetFillWidth, targetFillHeight), Color.Black));
+    va.Append(new Vertex(new(targetFillWidth, 0.0f), Color.Black));
+    va.Append(new Vertex(new(targetFillWidth - targetFillHeight, 0.0f), Color.Black));
+    va.Append(new Vertex(new(targetFillWidth - targetFillHeight, targetFillHeight2), Color.Black));
+    va.Append(new Vertex(new(targetFillWidth, targetFillHeight2), Color.Black));
+    va.Append(new Vertex(new(targetFillWidth, targetFillHeight), Color.Black));
 
 
-    RectangleShape sky = new(new Vector2f(400.0f, 400.0f))
+
+    RectangleShape sky = new(new Vector2f(800.0f, 500.0f))
     {
         FillColor = rm.Colors["Sky"],
         Position = new Vector2f(0.0f, 0.0f),
     };
-    RectangleShape ground = new(new Vector2f(400.0f, 400.0f))
+    RectangleShape ground = new(new Vector2f(800.0f, 500.0f))
     {
         FillColor = rm.Colors["Ground"],
-        Position = new Vector2f(0.0f, 400.0f),
+        Position = new Vector2f(0.0f, 500.0f),
     };
     target.Draw(sky);
     target.Draw(ground);
-    target.Draw(referenceIndicatorL, RenderStates.Default);
+    target.Draw(va);
 }
 
 static bool LoadRessources(out ResourceManager rm)
@@ -69,7 +65,7 @@ if(!LoadRessources(out rm) || rm is null)
     return 0x01;
 }
 
-RenderWindow win = new(new (750, 1000),"A320-PFD");
+RenderWindow win = new(new (800, 1000),"A320-PFD");
 win.SetFramerateLimit(20);
 win.KeyPressed += (sender, ev) =>
 {
