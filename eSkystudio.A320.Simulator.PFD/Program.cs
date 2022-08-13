@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using eSkystudio.A320.RessourcesManager.Models;
+using eSkystudio.A320.Simulator.PFD.StaticFigures;
 using SFML.Graphics;
 using SFML.Window;
 using SFML.System;
@@ -8,24 +9,14 @@ ResourceManager rm;
 
 void DrawAHI(double pitch, double roll, RenderTarget target)
 {
-    target.Clear(Color.Transparent);
 
-    int targetFillWidth = 100;
-    int targetFillHeight = 20;
-    int targetFillHeight2 = 50;
-
-    VertexArray va = new VertexArray(PrimitiveType.Quads);
-
-    va.Append(new Vertex(new(0.0f, 0.0f), Color.Black));
-    va.Append(new Vertex(new(0.0f, targetFillHeight), Color.Black));
-    va.Append(new Vertex(new(targetFillWidth, targetFillHeight), Color.Black));
-    va.Append(new Vertex(new(targetFillWidth, 0.0f), Color.Black));
-    va.Append(new Vertex(new(targetFillWidth - targetFillHeight, 0.0f), Color.Black));
-    va.Append(new Vertex(new(targetFillWidth - targetFillHeight, targetFillHeight2), Color.Black));
-    va.Append(new Vertex(new(targetFillWidth, targetFillHeight2), Color.Black));
-    va.Append(new Vertex(new(targetFillWidth, targetFillHeight), Color.Black));
-
-
+    var left = new AircraftPositionIndicatorLeft()
+    {
+        Position = new Vector2f(2.0f, 490.0f),
+        FillColor = Color.Black,
+        OutlineColor = Color.Yellow,
+        OutlineThickness = 2,
+    };
 
     RectangleShape sky = new(new Vector2f(800.0f, 500.0f))
     {
@@ -39,7 +30,7 @@ void DrawAHI(double pitch, double roll, RenderTarget target)
     };
     target.Draw(sky);
     target.Draw(ground);
-    target.Draw(va);
+    target.Draw(left);
 }
 
 static bool LoadRessources(out ResourceManager rm)
