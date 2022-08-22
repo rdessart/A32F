@@ -10,13 +10,7 @@ ResourceManager rm;
 void DrawAHI(double pitch, double roll, RenderTarget target)
 {
 
-    var left = new AircraftPositionIndicatorLeft()
-    {
-        Position = new Vector2f(2.0f, 490.0f),
-        FillColor = Color.Black,
-        OutlineColor = Color.Yellow,
-        OutlineThickness = 2,
-    };
+    var left = new AircraftPositionIndicatorLeft();
 
     RectangleShape sky = new(new Vector2f(800.0f, 500.0f))
     {
@@ -30,7 +24,7 @@ void DrawAHI(double pitch, double roll, RenderTarget target)
     };
     target.Draw(sky);
     target.Draw(ground);
-    target.Draw(left);
+    left.Draw(target);
 }
 
 static bool LoadRessources(out ResourceManager rm)

@@ -3,113 +3,82 @@ using SFML.System;
 
 namespace eSkystudio.A320.Simulator.PFD.StaticFigures;
 
-public class AircraftPositionIndicatorLeft : Shape
+public class AircraftPositionIndicatorLeft
 {
-    // private int _width;
-    // private int _height;
-    // private int _height2;
+    protected Vector2f _position;
+    protected float _width;
+    protected float _height;
+    protected float _height2;
+    protected float _outlineThickness;
 
-    // public int Width
-    // {
-    //     get => _width;
-    //     set
-    //     {
-    //         _width = value;
-    //         Generate();
-    //     }
-    // }
-    //
-    // public int Height2{
-    //     get => _height2;
-    //     set
-    //     {
-    //         _height2 = value;
-    //         Generate();
-    //     }
-    // }
-    // public int Height{
-    //     get => _height;
-    //     set
-    //     {
-    //         _height = value;
-    //         Generate();
-    //     }
-    // }
 
-    private int _x1;
-    private int _x2;
-    private int _y1;
-    private int _y2;
-    
-    public int X1 { 
-        get => _x1;
-        set
-        {
-            _x1 = value;
-            Generate();
-        }
-    }
-    public int X2{ 
-        get => _x2;
-        set
-        {
-            _x2 = value;
-            Generate();
-        }
-    }
-    public int Y1{ 
-        get => _y1;
-        set
-        {
-            _y1 = value;
-            Generate();
-        }
-    }
-    public int Y2{ 
-        get => _y2;
-        set
-        {
-            _y2 = value;
-            Generate();
-        }
+    public AircraftPositionIndicatorLeft()
+    {
+        _position = new Vector2f(100.0f, 500.0f);
+        _width = 100.0f;
+        _height = 30.0f;
+        _height2 = 50.0f;
+        _outlineThickness = 2.0f;
     }
     
-    public AircraftPositionIndicatorLeft() : base()
+    public Vector2f Position
     {
-        _points = Array.Empty<Vector2f>();
-        // Width = 100;
-        // Height = 20;
-        // Height2 = 50;
-        X2 = 100;
-        X1 = 80;
-        Y1 = 20;
-        Y2 = 50;
-        Generate();
-        Update();
+        get => _position;
+        set => _position = value;
     }
-    public void Generate()
+
+    public float Width
     {
-        _points = new[]
+        get => _width;
+        set => _width = value;
+    }
+    
+    public float Height
+    {
+        get => _height;
+        set => _height = value;
+    }
+    
+    public float Height2
+    {
+        get => _height2;
+        set => _height2 = value;
+    }
+    
+    public void Draw(RenderTarget target)
+    {
+        RectangleShape oRect0 = new RectangleShape()
         {
-            new Vector2f(0.0f, 0.0f),
-            new Vector2f(_x2, 0.0f),
-            new Vector2f(_x2, _y2),
-            new Vector2f(_x1, _y2),
-            new Vector2f(_x1, _y1),
-            new Vector2f(0.0f, _y1)
-            // new(0.0f, Height),
-            // new(Width, Height),
-            // new(Width, 0.0f),
-            // new(Width - Height, 0.0f),
-            // new(Width - Height, Height2),
-            // new(Width, Height2),
-            // new(Width, 0.0f),
+            Size = new Vector2f(_width + (2 * _outlineThickness), _height + (2 * _outlineThickness)),
+            Position = new Vector2f(_position.X - _outlineThickness, 
+                                    _position.Y - ((_height / 2.0f) + _outlineThickness)),
+            FillColor = Color.Yellow,
         };
+        
+        RectangleShape oRect1 = new RectangleShape()
+        {
+            Size = new Vector2f(_height + (2 * _outlineThickness), _height2 + (2.0f * _outlineThickness)),
+            Position = new Vector2f(_position.X + (_width - _height - _outlineThickness), 
+                                    _position.Y - 2.0f),
+            FillColor = Color.Yellow,
+        };
+        
+        RectangleShape rect0 = new RectangleShape()
+        {
+            Size = new Vector2f(_width, _height),
+            Position = new Vector2f(_position.X, _position.Y - 15.0f),
+            FillColor = Color.Black,
+        };
+        
+        RectangleShape rect1 = new RectangleShape()
+        {
+            Size = new Vector2f(_height, _height2),
+            Position = new Vector2f(_position.X + (_width - _height), _position.Y),
+            FillColor = Color.Black,
+        };
+        target.Draw(oRect0);
+        target.Draw(oRect1);
+        target.Draw(rect0);
+        target.Draw(rect1);
     }
-
-    private Vector2f[] _points;
-
-    public override uint GetPointCount() => (uint)_points.Length;
-
-    public override Vector2f GetPoint(uint index) => _points[index];
 }
